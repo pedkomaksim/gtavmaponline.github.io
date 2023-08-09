@@ -3,13 +3,9 @@
 <head>
 	<title>Map</title>
     <meta charset="utf-8" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />  
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<link rel="apple-touch-icon" href="https://vlados776.github.io/GTAVTutorials/images/icons/icon60.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="https://vlados776.github.io/GTAVTutorials/images/icons/icon76.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="https://vlados776.github.io/GTAVTutorials/images/icons/icon120.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="https://vlados776.github.io/GTAVTutorials/images/icons/icon152.png">
 	<link rel="stylesheet" href="leaflet.css" />
     <style>
         body
@@ -24,7 +20,7 @@
             width: 100%;
 			overflow:hidden;
         }
-		
+
 		#map {
 			top: 0px;
 			left: 0px;
@@ -37,8 +33,8 @@
 			font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 		}
 		.f4-map-icon {
-			width: 32px;
-			height: 37px;
+			width: 35px;
+			height: 40px;
 			background-image: url(markers.png);
 		}
 		#markers,
@@ -83,11 +79,13 @@
 			left: 200px;
 		}
 		.markItem {
+			align-items: center;
 			line-height: 50px;
 			border: 1px solid black;
 			/*text-align: center;*/
 			color: #fff;
 			overflow: auto;
+
 		}
 		#markersScroll {
 			overflow: auto;
@@ -97,21 +95,23 @@
 			margin: 0 -300px 0 0;*/
 		}
 		#markersScroll::-webkit-scrollbar { width: 0 !important }
-		
+
 		.selectedItem{
 			font-weight: bold;
 			background: rgb(73, 207, 82);
 		}
 		.menuIcon {
 				background-image: url(markers.png);
-				width: 32px;
+				width: 35px;
 			    background-position: 0 -0px;
+					align-items: center;
 				display: inline-block;
-				height: 37px;
+				height: 40px;
 				position: relative;
-				top: 13px;
+				top: 15px;
+				bottom: -15px;
 				left: 2px;
-				margin-right: 5px;
+				margin-right: 15px;
 		}
     </style>
 </head>
@@ -124,7 +124,7 @@
 	<input id="toggle" type="checkbox">
 	<label for="toggle" style="box-shadow: 0 1px 5px rgba(0,0,0,0.65); border-radius: 4px;">Markers</label>
 	<div id="map" style="background-color: #0FA8D2;"/>
-	
+
     <script src="../scripts/leaflet.js"></script>
     <!-- <script src="data_ENG.js"></script> -->
     <script src="locations.js"></script>
@@ -158,12 +158,14 @@
       L.tileLayer(image + '/{z}/{x}-{y}.png', {
         maxZoom: maxLevel, minZoom: minLevel, opacity: 1.0, zIndex: 1, noWrap: true,
         bounds: bounds,
-        attribution: 'GTA V Map'
+        attribution: 'GTA V Map',
+				useCache: true,
+	crossOrigin: true
 		  }).addTo(map);
-		  
+
       var zoom = 4; //map.getBoundsZoom(bounds);
       var center = new L.latLng(centerLat, centerLon);
-	  
+
 	  var loc = null;
 	  if (location.hash !== '') {
 		var hash = location.hash.replace('#', '');
@@ -177,16 +179,16 @@
 				showItem(loc);
 			}
 		}
-	  } 
-  
+	  }
+
   		map.setView(center, zoom);
-		
+
 		var marker = new Array();
 		map.on('click', function(e) {
 			console.log('"latitude": "' + e.latlng.lat + '",\n\t\t\t\t"longitude": "' + e.latlng.lng + '",')
 		});
-		
-		
+
+
 		function showAll() {
 			var count = GtaMap.data.Locations.length;
 			for (var i = 0; i < count; i++) {
@@ -196,26 +198,26 @@
 					var name = GtaMap.data.Locations[i].Name;
 					var lat = GtaMap.data.Locations[i].Latitude;
 					var lng = GtaMap.data.Locations[i].Longitude;
-					
+
 					try {
-						var iconPos = getCategory(cat).iconPosition * 37;
+						var iconPos = getCategory(cat).iconPosition * 40;
 					} catch (err) {
 						console.log(err);
 					}
 					var descr = GtaMap.data.Locations[i].Details;
-				
+
 					var icon = L.divIcon({
 						className: 'f4-map-marker',
 						html: '<div class="f4-map-icon" style="background-position: 0 -' + iconPos + 'px;"></div>',
-						iconSize: [32, 37],
-						iconAcnhor: [15, 37]
+						iconSize: [30, 40],
+						iconAcnhor: [15, 40]
 					});
 					marker.push(L.marker([lat, lng], {icon: icon}).addTo(map)
 						.bindPopup("<h1>" + name + "</h1><i>"+getCategory(cat).title+"</i>"));//<p>" + descr + "</p>"));
 				}
 			}
 		};
-	
+
 	function showCategory() {
 	$(".selectedItem").each(function(){
 		var id = this.id;
@@ -224,17 +226,17 @@
 			var cat = getCategory(id);
 			var catName = cat.title;
 			id = cat.id;
-			var iconPos = cat.iconPosition*37;
+			var iconPos = cat.iconPosition*40;
 			var icon = L.divIcon({
 				className: 'f4-map-marker',
 				html: '<div class="f4-map-icon" style="background-position: 0 -' + iconPos + 'px;"></div>',
-				iconSize: [32, 37],
-				iconAnchor: [15, 37]
+				iconSize: [30, 40],
+				iconAnchor: [15, 40]
 			});
-			
+
 			var arr = GtaMap.data.Locations;
 			var item = getItem(arr, id);
-			
+
 			while(typeof item != "undefined") {
 				var locat = arr[item];
 				var name = locat.Name;
@@ -248,23 +250,23 @@
 		}
 	});
 	};
-	
+
 	function showItem(loc) {
 		var id = loc.category_id;
-		
+
 		marker = [];
 		var iconPos = (typeof cats[id] !== 'undefined' ? cats[id] : cats[0]);
 		var icon = L.divIcon({
             className: 'f4-map-marker',
             html: '<div class="f4-map-icon" style="background-position: 0 -' + iconPos + 'px;"></div>',
-            iconSize: [32, 42],
+            iconSize: [32, 40],
             iconAnchor: [15, 42]
         });
 		descr = loc.description;
 		marker.push(L.marker([loc.latitude, loc.longitude], {icon: icon}).addTo(map)
 			.bindPopup("<h1>"+loc.title+"</h1><i>"+GtaMap.data.categories[id].title+"</i><p>"+descr+"</p>"));
 	}
-	
+
 	function getCategory(id) {
 		var arr = GtaMap.data.allCategories;
 		var len = arr.length;
@@ -272,14 +274,14 @@
 			if (arr[i].id == id) return arr[i];
 		}
 	}
-	
+
 	function getItem(arr, category, offset) {
 		offset = offset || 0;
 		for(var i = offset; i < arr.length; i++) {
 			if (arr[i].Category == category) return i;
 		}
 	}
-	
+
 	function getAllLayers() {
     var items = [];
     var categories = GtaMap.data.categories;
@@ -303,32 +305,32 @@
     });
     return loc;
   }
-	
+
 	$(function() {
 		var len = GtaMap.data.allCategories.length;
 		var cat = GtaMap.data.allCategories;
-		
+
 		cat.sort(function(a,b) {
 			var first = a.title.toLowerCase(),
 				second = b.title.toLowerCase();
 			return ((first < second) ? -1 : ((first > second) ? 1 : 0));
 		});
-		
+
 		for (var i=0; i<len; i++) {
 			if(cat[i].active == 1) {
-				$("#markersScroll").append("<div class='markItem' id='"+cat[i].id+"'> <div class='menuIcon' style = 'background-position: 0 -" + cat[i].iconPosition*37 + "px; '></div>"+cat[i].title+"</div>");
+				$("#markersScroll").append("<div class='markItem' id='"+cat[i].id+"'> <div class='menuIcon' style = 'background-position: 0 -" + cat[i].iconPosition*40 + "px; '></div>"+cat[i].title+"</div>");
 			}
 		}
-		
+
 		$(".markItem").on("click",function() {
 			var id = this.id
-			
+
 			$.each(map._layers, function(ml){
 				if (typeof map._layers[ml]._popup != "undefined"){
 					map.removeLayer(map._layers[ml]);
 				}
 			})
-			
+
 			if (id != 0) {
 				if ($(this).hasClass("selectedItem")) {
 					$(this).removeClass("selectedItem");
@@ -351,7 +353,7 @@
 				}
 			}
 		});
-		
+
 	});
 	</script>
 </body>
